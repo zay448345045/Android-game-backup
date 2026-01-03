@@ -1,0 +1,39 @@
+name: Download and Release
+
+on:
+  workflow_dispatch: # 手动触发
+
+jobs:
+  download_and_release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # 允许创建 Release
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v5
+
+      - name: Download File
+        env:
+          SP_COOKIE: ${{ secrets.git }}
+        run: |
+          echo "--- 步骤 1: 下载文件（自动获取文件名） ---"
+          URL="https://file-cdn.gitcode.com/4104105/releases/untagger_fe85b8e4d93b4040b86f2bacbcf8ff40/GTA_%20CTW_4.4.221.apk?auth_key=1767438909-98e0471510614d82aacd8d3bf5e98ea7-0-4d40785477e3429f0cf7d9d70647b1b7886f94b30440c3f375cb247de9c50235"
+
+          # -OJ 会根据服务器返回的 Content-Disposition 自动命名
+          curl -L -A "Mozilla/5.0" \
+               -H "Cookie: $SP_COOKIE" \
+               -OJ "$URL"
+
+          echo "--- 步骤 2: 查看下载的文件名 ---"
+          ls -lh
+
+      - name: Create Release and Upload
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: "download-v${{ github.run_number }}"
+          name: "Download v${{ github.run_number }}"
+          body: |
+            ## 下载完成
+            - 文件自动命名，无需手动指定。
+          files: ./*
