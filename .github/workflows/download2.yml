@@ -21,7 +21,7 @@ jobs:
           SP_COOKIE: ${{ secrets.QQ }}
         run: |
           mkdir -p ./output
-          URL="https://multimedia.qfile.qq.com/download?appid=14901&client_type=web&client_ver=8.9.25&fileid=EhTUgsZtYt-QnTVTr28YypkCnuP4dBjqlPKsCyC1dCjc56Gyx4aSAzIEcHJvZFCA6klaEOUbeF65cDYBlZCalx90CgJ6A0pb_4IBAmd6&fldc=JS8WkPRp-vNodw0H5zPbklmFbAaZoqC7EgpwK0WyB6WDewy9f4UYgTVCY_dFIe_bdoy68Og0VguUzwQKqRZcO-utet1I5qTe-WYV2nicRqA3sNp92_gGP-WzLpsakqGkT-FTcuIkK_U0012VcHYdEzbIo1hjzuO1c2adruxPx8AppwPwePJXPkw&rkey=CAMSqAGmgtos7rOgmux-xY-LcKgtmLgfR90VUpLQbqht0767s_4k1awkJtKRa93nG-Mrja8_0Esdkds57Oku6GZaivLiNHWs4SVZGNQn8FcSSzvKnL9ljPk9wSamqtF0006YpPoBKpFpV8n53XVQbvm4r4xrqFaLbYm2KnbH_A1eNucCFSChQxc7byrwIGZAhFeZmHhFdnAHQlyDVWYleT-AW2XBmEMS4Rm1vDo&filename=MovieData.zip"
+          URL="https://multimedia.qfile.qq.com/download?appid=14901&client_type=web&client_ver=8.9.25&fileid=EhTUgsZtYt-QnTVTr28YypkCnuP4dBjqlPKsCyC1dCjc56Gyx4aSAzIEcHJvZFCA6klaEOUbeF65cDYBlZCalx90CgJ6A0pb_4IBAmd6&fldc=OWeLRTt3eMCQKn_3aOJj5EAz7TEbA29NKmHtmpjYFtclMoGtUvCWhBGM9fVdpVvxWOOypJpL1NVA3aNITFtzXAB0e_qC2epJvVUL58tBi0oX_U_w3znuDSVMe2o8ztDSErVsN4kK8yOdzUPc9Qnqb1Orlkm9iNFizlpDTaB05jUAHTF-Nxo696o&rkey=CAMSqAGmgtos7rOgmux-xY-LcKgt6qXLjq7k1eXzgCoWz7x615bc40l1EgVpOww8lwhzZg_bf_7Jtv4_nJOZ9_PqeHkPAsTgIVUCKblIkkU8GrYFw5tM1Zu9auHzoP0Fp_kEDl581v5fJ5xh1hOa7163FyiN8tcfEDgag_goxHKx_K3Vsf5pxBUAglWIDfD0SRIio6S75Xh1KxrVl-Z4i1rApyjnp_ygiPrAQP0&filename=MovieData.zip"
           
           # 建议增加 -o 指定保存名称，并下载到 output 目录
           aria2c -x 16 -s 16 -d ./output -o MovieData.zip \
