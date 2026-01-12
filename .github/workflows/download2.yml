@@ -1,38 +1,55 @@
-name: Download and Release (Fixed)
+name: Super Large File Downloader
 
 on:
   workflow_dispatch:
 
 jobs:
-  download_and_release:
+  download:
     runs-on: ubuntu-latest
     permissions:
       contents: write
 
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v5
+      - name: Maximize Disk Space
+        # 这个步骤可以清理系统自带的垃圾，多腾出约 20GB 空间
+        uses: easimon/maximize-build-space@master
+        with:
+          root-reserve-mb: 2048
+          swap-size-mb: 1
+          remove-dotnet: 'true'
+          remove-android: 'true'
+          remove-haskell: 'true'
 
-      - name: Install aria2
-        run: sudo apt-get update && sudo apt-get install -y aria2
+      - name: Checkout
+        uses: actions/checkout@v6
 
-      - name: Multi-threaded Download
+      - name: Install aria2 & 7z
+        run: sudo apt-get update && sudo apt-get install -y aria2 p7zip-full
+
+      - name: Download and Compress
         env:
           SP_COOKIE: ${{ secrets.QQ }}
         run: |
-          mkdir -p ./output
-          URL="https://multimedia.qfile.qq.com/download?appid=14901&client_type=web&client_ver=8.9.25&fileid=EhTUgsZtYt-QnTVTr28YypkCnuP4dBjqlPKsCyC1dCjc56Gyx4aSAzIEcHJvZFCA6klaEOUbeF65cDYBlZCalx90CgJ6A0pb_4IBAmd6&fldc=OWeLRTt3eMCQKn_3aOJj5EAz7TEbA29NKmHtmpjYFtclMoGtUvCWhBGM9fVdpVvxWOOypJpL1NVA3aNITFtzXAB0e_qC2epJvVUL58tBi0oX_U_w3znuDSVMe2o8ztDSErVsN4kK8yOdzUPc9Qnqb1Orlkm9iNFizlpDTaB05jUAHTF-Nxo696o&rkey=CAMSqAGmgtos7rOgmux-xY-LcKgt6qXLjq7k1eXzgCoWz7x615bc40l1EgVpOww8lwhzZg_bf_7Jtv4_nJOZ9_PqeHkPAsTgIVUCKblIkkU8GrYFw5tM1Zu9auHzoP0Fp_kEDl581v5fJ5xh1hOa7163FyiN8tcfEDgag_goxHKx_K3Vsf5pxBUAglWIDfD0SRIio6S75Xh1KxrVl-Z4i1rApyjnp_ygiPrAQP0&filename=MovieData.zip"
+          mkdir -p ./download_dir
+          mkdir -p ./release_files
           
-          # 建议增加 -o 指定保存名称，并下载到 output 目录
-          aria2c -x 16 -s 16 -d ./output -o MovieData.zip \
+          echo "--- 开始下载 ---"
+          # 注意：请确保 URL 在运行时有效
+          aria2c -x 16 -s 16 -d ./download_dir -o MovieData.zip \
                  --header="Cookie: $SP_COOKIE" \
-                 --user-agent="Mozilla/5.0" \
-                 "$URL"
+                 --user-agent="netdisk;pc" \
+                 "https://multimedia.qfile.qq.com/download?appid=14901&client_type=web&client_ver=8.9.25&fileid=EhTUgsZtYt-QnTVTr28YypkCnuP4dBjqlPKsCyC1dCjc56Gyx4aSAzIEcHJvZFCA6klaEOUbeF65cDYBlZCalx90CgJ6A0pb_4IBAmd6&fldc=OWeLRTt3eMCQKn_3aOJj5EAz7TEbA29NKmHtmpjYFtclMoGtUvCWhBGM9fVdpVvxWOOypJpL1NVA3aNITFtzXAB0e_qC2epJvVUL58tBi0oX_U_w3znuDSVMe2o8ztDSErVsN4kK8yOdzUPc9Qnqb1Orlkm9iNFizlpDTaB05jUAHTF-Nxo696o&rkey=CAMSqAGmgtos7rOgmux-xY-LcKgt6qXLjq7k1eXzgCoWz7x615bc40l1EgVpOww8lwhzZg_bf_7Jtv4_nJOZ9_PqeHkPAsTgIVUCKblIkkU8GrYFw5tM1Zu9auHzoP0Fp_kEDl581v5fJ5xh1hOa7163FyiN8tcfEDgag_goxHKx_K3Vsf5pxBUAglWIDfD0SRIio6S75Xh1KxrVl-Z4i1rApyjnp_ygiPrAQP0&filename=MovieData.zip"
 
-      - name: Create Release and Upload
+          echo "--- 立即进行 7z 分卷打包 (1.8G/卷) ---"
+          # -mx0 表示不压缩，只打包，速度极快且不占额外 CPU
+          7z a ./release_files/MovieData.7z ./download_dir/MovieData.zip -v1800m -mx0
+          
+          echo "--- 压缩完成，立即删除原始大文件以释放空间 ---"
+          rm -rf ./download_dir
+
+      - name: Upload to Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: "v${{ github.run_number }}"
-          name: "Release v${{ github.run_number }}"
-          # 只上传 output 目录下的 zip 文件
-          files: ./output/MovieData.zip
+          name: "Large_File_v${{ github.run_number }}"
+          files: ./release_files/MovieData.7z.*
