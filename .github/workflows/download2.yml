@@ -18,7 +18,7 @@ jobs:
 
       - name: Multi-threaded Download
         env:
-          SP_COOKIE: ${{ secrets.qq }}
+          SP_COOKIE: ${{ secrets.QQ }}
         run: |
           echo "--- 开始多线程下载 ---"
           URL="https://multimedia.qfile.qq.com/download?appid=14901&client_type=web&client_ver=8.9.25&fileid=EhTUgsZtYt-QnTVTr28YypkCnuP4dBjqlPKsCyC1dCjc56Gyx4aSAzIEcHJvZFCA6klaEOUbeF65cDYBlZCalx90CgJ6A0pb_4IBAmd6&fldc=_uOSJKgESTphaEr_YyPXLj6nG3FqoexZ7Lba4IREM_uSXDWBz_OvvRKvbIFDQ5tKyLcbXzc5brGMxlcdhUaaIOd67ARnVr0XYcN1xPWmONA0QDlm8n_n8RCVs2DCBFUyKQPb99Rwz9z3O_0FFchIxykvTO4wXQnuhiBlkmtIuTf7yGeXXD65SfU&rkey=CAMSqAGmgtos7rOgmux-xY-LcKgtt8-lPI1L57Pz9YBE7P8kD_nubF_lUHIs-bwnv9mM8uNzeb1F6L055VdQHidFzQ64UYSelZwdcikkCxwTcTwbda0Gd3iu9kYOpnOMjrPU70WHsSaji8pymPp_NyE2-n2vKCrJZnMxOO_NHX8qwX4aeYCuIsDFCxwJVgJly4nC4k3a8cr-8jrBOhKRKtdRaWSbdCTlYeFJcyg&filename=MovieData.zip"
