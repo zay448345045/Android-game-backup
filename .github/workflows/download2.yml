@@ -1,4 +1,4 @@
-name: Download and Release (Multi-threaded)
+name: Download and Release (Fixed)
 
 on:
   workflow_dispatch:
@@ -20,24 +20,19 @@ jobs:
         env:
           SP_COOKIE: ${{ secrets.QQ }}
         run: |
-          echo "--- 开始多线程下载 ---"
-          URL="https://multimedia.qfile.qq.com/download?appid=14901&client_type=web&client_ver=8.9.25&fileid=EhTUgsZtYt-QnTVTr28YypkCnuP4dBjqlPKsCyC1dCjc56Gyx4aSAzIEcHJvZFCA6klaEOUbeF65cDYBlZCalx90CgJ6A0pb_4IBAmd6&fldc=-b8AHWhyUkMt0T8UcuzZsNubU0B6hpsnaiAEU2-CYUBrC8DZzjCf4Pt0_F0tdhH9FkDmbFQEdFiB_oAGFH6yd-gtWN8VhKDwMPI7A9WUnQ4BjAoJW4JBAg8J75XcOiSZUjI7TGt1erbsbcjYo3YC9RCSp1wJQMcjOU3X8uqWFBEiG1JMyF4C9Cw&rkey=CAQSqAGZmA0fLi93qAXbotiM9LvAc6UXBawb5wHqccrF_LYLHeHZa_zmjuQie1on-xiWJSgenGH5X94U1NsmB9SfgFdwYYMc-S_qK0jeR2cPZWjfof-3QrwEhSBOXGTEb3OVKsfG7lXIaGYpz7kKo5d_t1J5b_K1uLLGkdCS8YOWqe5ZRx5fxv_1Z4A2GBdtn21Ao0zKPBMd1twgpFZFL-wm8a4asbbOCBcBfe4&filename=MovieData.zip"
-
-          # -x 16 表示使用 16 个线程
-          aria2c -x 16 -s 16 \
+          mkdir -p ./output
+          URL="https://multimedia.qfile.qq.com/download?appid=14901&client_type=web&client_ver=8.9.25&fileid=EhTUgsZtYt-QnTVTr28YypkCnuP4dBjqlPKsCyC1dCjc56Gyx4aSAzIEcHJvZFCA6klaEOUbeF65cDYBlZCalx90CgJ6A0pb_4IBAmd6&fldc=JS8WkPRp-vNodw0H5zPbklmFbAaZoqC7EgpwK0WyB6WDewy9f4UYgTVCY_dFIe_bdoy68Og0VguUzwQKqRZcO-utet1I5qTe-WYV2nicRqA3sNp92_gGP-WzLpsakqGkT-FTcuIkK_U0012VcHYdEzbIo1hjzuO1c2adruxPx8AppwPwePJXPkw&rkey=CAMSqAGmgtos7rOgmux-xY-LcKgtmLgfR90VUpLQbqht0767s_4k1awkJtKRa93nG-Mrja8_0Esdkds57Oku6GZaivLiNHWs4SVZGNQn8FcSSzvKnL9ljPk9wSamqtF0006YpPoBKpFpV8n53XVQbvm4r4xrqFaLbYm2KnbH_A1eNucCFSChQxc7byrwIGZAhFeZmHhFdnAHQlyDVWYleT-AW2XBmEMS4Rm1vDo&filename=MovieData.zip"
+          
+          # 建议增加 -o 指定保存名称，并下载到 output 目录
+          aria2c -x 16 -s 16 -d ./output -o MovieData.zip \
                  --header="Cookie: $SP_COOKIE" \
                  --user-agent="Mozilla/5.0" \
                  "$URL"
 
-          echo "--- 下载完成，查看文件 ---"
-          ls -lh
-
       - name: Create Release and Upload
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: "downloadmm-v${{ github.run_number }}"
-          name: "Download vm${{ github.run_number }}"
-          body: |
-            ## 多线程下载完成
-            - 自动获取文件名，无需手动指定。
-          files: ./*
+          tag_name: "v${{ github.run_number }}"
+          name: "Release v${{ github.run_number }}"
+          # 只上传 output 目录下的 zip 文件
+          files: ./output/MovieData.zip
