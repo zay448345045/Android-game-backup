@@ -18,10 +18,10 @@ jobs:
 
       - name: Multi-threaded Download
         env:
-          SP_COOKIE: ${{ secrets.git }}
+          SP_COOKIE: ${{ secrets.qq }}
         run: |
           echo "--- 开始多线程下载 ---"
-          URL="https://file-cdn.gitcode.com/4104105/releases/untagger_81fdbbca4c8f4184b95fed3018f1f304/CTW-v4.4.221%E6%B1%89%E5%8C%96%E4%BF%AE%E5%A4%8D-mod%E8%8F%9C%E5%8D%95_kill2%E5%A4%87%E7%94%A8%E7%89%88B.apk?auth_key=1767386991-64b41aa163c847fc89946aacaa5f0daf-0-765c6143a7d4cf4c88d2358f0923d05abba58898237283dd634bd964fddbb27e"
+          URL="https://multimedia.qfile.qq.com/download?appid=14901&client_type=web&client_ver=8.9.25&fileid=EhTUgsZtYt-QnTVTr28YypkCnuP4dBjqlPKsCyC1dCjc56Gyx4aSAzIEcHJvZFCA6klaEOUbeF65cDYBlZCalx90CgJ6A0pb_4IBAmd6&fldc=_uOSJKgESTphaEr_YyPXLj6nG3FqoexZ7Lba4IREM_uSXDWBz_OvvRKvbIFDQ5tKyLcbXzc5brGMxlcdhUaaIOd67ARnVr0XYcN1xPWmONA0QDlm8n_n8RCVs2DCBFUyKQPb99Rwz9z3O_0FFchIxykvTO4wXQnuhiBlkmtIuTf7yGeXXD65SfU&rkey=CAMSqAGmgtos7rOgmux-xY-LcKgtt8-lPI1L57Pz9YBE7P8kD_nubF_lUHIs-bwnv9mM8uNzeb1F6L055VdQHidFzQ64UYSelZwdcikkCxwTcTwbda0Gd3iu9kYOpnOMjrPU70WHsSaji8pymPp_NyE2-n2vKCrJZnMxOO_NHX8qwX4aeYCuIsDFCxwJVgJly4nC4k3a8cr-8jrBOhKRKtdRaWSbdCTlYeFJcyg&filename=MovieData.zip"
 
           # -x 16 表示使用 16 个线程
           aria2c -x 16 -s 16 \
@@ -35,8 +35,8 @@ jobs:
       - name: Create Release and Upload
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: "download-v${{ github.run_number }}"
-          name: "Download v${{ github.run_number }}"
+          tag_name: "downloadmm-v${{ github.run_number }}"
+          name: "Download vm${{ github.run_number }}"
           body: |
             ## 多线程下载完成
             - 自动获取文件名，无需手动指定。
