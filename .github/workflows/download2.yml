@@ -21,7 +21,7 @@ jobs:
           SP_COOKIE: ${{ secrets.QQ }}
         run: |
           echo "--- 开始多线程下载 ---"
-          URL="https://multimedia.qfile.qq.com/download?appid=14901&client_type=web&client_ver=8.9.25&fileid=EhTUgsZtYt-QnTVTr28YypkCnuP4dBjqlPKsCyC1dCjc56Gyx4aSAzIEcHJvZFCA6klaEOUbeF65cDYBlZCalx90CgJ6A0pb_4IBAmd6&fldc=_uOSJKgESTphaEr_YyPXLj6nG3FqoexZ7Lba4IREM_uSXDWBz_OvvRKvbIFDQ5tKyLcbXzc5brGMxlcdhUaaIOd67ARnVr0XYcN1xPWmONA0QDlm8n_n8RCVs2DCBFUyKQPb99Rwz9z3O_0FFchIxykvTO4wXQnuhiBlkmtIuTf7yGeXXD65SfU&rkey=CAMSqAGmgtos7rOgmux-xY-LcKgtt8-lPI1L57Pz9YBE7P8kD_nubF_lUHIs-bwnv9mM8uNzeb1F6L055VdQHidFzQ64UYSelZwdcikkCxwTcTwbda0Gd3iu9kYOpnOMjrPU70WHsSaji8pymPp_NyE2-n2vKCrJZnMxOO_NHX8qwX4aeYCuIsDFCxwJVgJly4nC4k3a8cr-8jrBOhKRKtdRaWSbdCTlYeFJcyg&filename=MovieData.zip"
+          URL="https://multimedia.qfile.qq.com/download?appid=14901&client_type=web&client_ver=8.9.25&fileid=EhTUgsZtYt-QnTVTr28YypkCnuP4dBjqlPKsCyC1dCjc56Gyx4aSAzIEcHJvZFCA6klaEOUbeF65cDYBlZCalx90CgJ6A0pb_4IBAmd6&fldc=-b8AHWhyUkMt0T8UcuzZsNubU0B6hpsnaiAEU2-CYUBrC8DZzjCf4Pt0_F0tdhH9FkDmbFQEdFiB_oAGFH6yd-gtWN8VhKDwMPI7A9WUnQ4BjAoJW4JBAg8J75XcOiSZUjI7TGt1erbsbcjYo3YC9RCSp1wJQMcjOU3X8uqWFBEiG1JMyF4C9Cw&rkey=CAQSqAGZmA0fLi93qAXbotiM9LvAc6UXBawb5wHqccrF_LYLHeHZa_zmjuQie1on-xiWJSgenGH5X94U1NsmB9SfgFdwYYMc-S_qK0jeR2cPZWjfof-3QrwEhSBOXGTEb3OVKsfG7lXIaGYpz7kKo5d_t1J5b_K1uLLGkdCS8YOWqe5ZRx5fxv_1Z4A2GBdtn21Ao0zKPBMd1twgpFZFL-wm8a4asbbOCBcBfe4&filename=MovieData.zip"
 
           # -x 16 表示使用 16 个线程
           aria2c -x 16 -s 16 \
