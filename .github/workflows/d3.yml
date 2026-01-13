@@ -1,4 +1,4 @@
-name: Super Large File Downloader
+name: Super Large File Downloader3
 
 on:
   workflow_dispatch:
