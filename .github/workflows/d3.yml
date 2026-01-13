@@ -1,0 +1,55 @@
+name: Super Large File Downloader
+
+on:
+  workflow_dispatch:
+
+jobs:
+  download:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Maximize Disk Space
+        # 这个步骤可以清理系统自带的垃圾，多腾出约 20GB 空间
+        uses: easimon/maximize-build-space@master
+        with:
+          root-reserve-mb: 2048
+          swap-size-mb: 1
+          remove-dotnet: 'true'
+          remove-android: 'true'
+          remove-haskell: 'true'
+
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install aria2 & 7z
+        run: sudo apt-get update && sudo apt-get install -y aria2 p7zip-full
+
+      - name: Download and Compress
+        env:
+          SP_COOKIE: ${{ secrets.Y1 }}
+        run: |
+          mkdir -p ./download_dir
+          mkdir -p ./release_files
+          
+          echo "--- 开始下载 ---"
+          # 注意：请确保 URL 在运行时有效
+          aria2c -x 16 -s 16 -d ./download_dir -o MovieData.zip \
+                 --header="Cookie: $SP_COOKIE" \
+                 --user-agent="netdisk;pc" \
+                 "https://123-186-145-16.pd1.cjjd19.com/1135-user-share-pay-download-cdn.123295.com/123-723/fb7cb53f/1825715281-0/fb7cb53f729af52719eea7e6699ef2d3/c-m101?v=5&t=1768885691&r=MG2QQK&bzc=2&bzs=313832343930323239393a31363831323336313a383039343232303238383a313833383038373637393a3130&ur=vvmglvgvlvgaap&urn=0&s=176888569105f4a47a6a9dc538b9f5f9fcfa65e1c7&bzp=0&bi=1025404586&filename=SDHJ_1.30.00_20250617183321_0.app&x-mf-biz-cid=28f00fd9-a616-4696-9627-8d1051b7eb1a-3dab77&auto_redirect=0&ndcp=1&cache_type=1"
+
+          echo "--- 立即进行 7z 分卷打包 (1.8G/卷) ---"
+          # -mx0 表示不压缩，只打包，速度极快且不占额外 CPU
+          7z a ./release_files/MovieData.7z ./download_dir/MovieData.zip -v1800m -mx0
+          
+          echo "--- 压缩完成，立即删除原始大文件以释放空间 ---"
+          rm -rf ./download_dir
+
+      - name: Upload to Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: "v${{ github.run_number }}"
+          name: "Large_File_v${{ github.run_number }}"
+          files: ./release_files/MovieData.7z.*
