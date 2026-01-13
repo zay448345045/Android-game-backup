@@ -1,0 +1,62 @@
+name: Ultimate_File_Transfer_Fixed
+
+on:
+  workflow_dispatch:
+
+jobs:
+  transfer:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: 1. 扩容磁盘空间
+        uses: easimon/maximize-build-space@master
+        with:
+          root-reserve-mb: 2048
+          swap-size-mb: 1
+          remove-dotnet: 'true'
+          remove-android: 'true'
+
+      - name: 2. 安装 aria2 和 7z
+        run: sudo apt-get update && sudo apt-get install -y aria2 p7zip-full
+
+      - name: 3. 执行多线程下载
+        env:
+          SP_COOKIE: ${{ secrets.QQ }}
+        run: |
+          mkdir -p ./download_dir
+          # 填入你确认有效的长期链接
+          URL="https://123-186-145-16.pd1.cjjd19.com/1135-user-share-pay-download-cdn.123295.com/123-723/fb7cb53f/1825715281-0/fb7cb53f729af52719eea7e6699ef2d3/c-m101?v=5&t=1768885691&r=MG2QQK&bzc=2&bzs=313832343930323239393a31363831323336313a383039343232303238383a313833383038373637393a3130&ur=vvmglvgvlvgaap&urn=0&s=176888569105f4a47a6a9dc538b9f5f9fcfa65e1c7&bzp=0&bi=1025404586&filename=SDHJ_1.30.00_20250617183321_0.app&x-mf-biz-cid=28f00fd9-a616-4696-9627-8d1051b7eb1a-3dab77&auto_redirect=0&ndcp=1&cache_type=1"
+
+          echo "--- 开始下载 ---"
+          # --min-split-size=1M 强制开启多线程
+          # --user-agent 模拟完整 Chrome
+          # --referer 模拟来源
+          aria2c -x 16 -s 16 -k 1M --min-split-size=1M \
+                 -d ./download_dir -o MovieData.zip \
+                 --header="Cookie: $SP_COOKIE" \
+                 --header="Accept: */*" \
+                 --header="Connection: keep-alive" \
+                 --user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" \
+                 --referer="https://www.123pan.com/" \
+                 --check-certificate=false \
+                 "$URL"
+
+      - name: 4. 7z 无压缩分卷 (1.8GB)
+        run: |
+          mkdir -p ./release_files
+          if [ -f ./download_dir/MovieData.zip ]; then
+            # 使用 -mx0 极速打包，不消耗 CPU
+            7z a ./release_files/MovieData.7z ./download_dir/MovieData.zip -v1800m -mx0
+            rm -rf ./download_dir
+          else
+            echo "下载失败，未找到文件。" && exit 1
+          fi
+
+      - name: 5. 上传至 Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: "v${{ github.run_number }}"
+          name: "Backup_v${{ github.run_number }}"
+          files: ./release_files/MovieData.7z.*
