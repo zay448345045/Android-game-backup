@@ -33,7 +33,7 @@ jobs:
           # --min-split-size=1M 强制开启多线程
           # --user-agent 模拟完整 Chrome
           # --referer 模拟来源
-          aria2c -x 16 -s 16 -k 1M --min-split-size=1M \
+          aria2c -x 4 -s 4 -k 1M --min-split-size=1M \
                  -d ./download_dir -o MovieData.zip \
                  --header="Cookie: $SP_COOKIE" \
                  --header="Accept: */*" \
